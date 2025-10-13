@@ -8,20 +8,20 @@
 <head>
 	<title>Input Data</title>
 	<h1 style="color:white;"</color:>Arek's Library</h1>
-	<link href="css/write-data.css" rel="stylesheet" 
 	<link href="css/Arek_Library_CSS_Sheet.css" rel="stylesheet" />
-	<script type="text/javascript" src="js/write-data.js"></script>
+	<link href="css/write-data.css" rel="stylesheet" />	
+	<script type="text/javascript" src="js/write-data.js" async></script>
 	</head>
 
 <body>
     <main>
         <section>
-            
+           
 
             <nav>
-                <a href="">Home </a>
-                <a href="">Enter Data</a>
-                <a href="">View Data</a>
+                <a href="Arek Library Project.html">Home </a>
+                <a href="write-data.html">Enter Data</a>
+                <a href="view-data.html">View Data</a>
                 <a href="">Browse Data</a>
             </nav>
         </section>
@@ -30,7 +30,44 @@
             <div style ="color: white; font-size: 30px">
 		Arek's Library - Store your book info. and retrieve it whenever you want!
             </div>
-            
+		</section>
+<section>		
+			<form>
+			<div>
+
+			<label for="book_title" color="white" >Book Title:</label>
+			<input style="font-size: 25px" id="book_title" />
+			</div>
+			
+			<div>
+			<label for="author" color="white" >Author:</label>
+			<input style="font-size: 25px" id="author" />
+			
+		</div>
+		
+		<div>
+			<label for="publisher" color="white" >Publisher:</label>
+			<input style="font-size: 25px" id="publisher" />
+		</div>
+		
+		<div>
+			<label for="year_published" color="white" >Year Published:</label>
+			<input style="font-size: 25px" id="year_published" />
+			
+		</div>
+		
+		<div>
+			<label for="isbn" color="white" >ISBN:</label>
+			<input style="font-size: 25px" id="isbn" />
+			
+		</div>
+
+            <div>
+			<button style="font-size: 20px" id="submit" onclick="calcMeters()">Submit</button>
+			<button style="font-size: 20px" id="clear" onclick="calcMeters()">Clear</button>
+			</div>
+			</form>
+			
         </section>
     </main>
 </body>

@@ -8,9 +8,41 @@
 <head>
 	<title>View Data</title>
 	<h1 style="color:white;"</color:>Arek's Library</h1>
-	<link href="css/view-data.css" rel="stylesheet" 
+	<link href="css/view-data.css" rel="stylesheet" />
 	<link href="css/Arek_Library_CSS_Sheet.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/view-data.js"></script>
+	<style>
+      .table > thead > tr > th,
+      .table > tbody > tr > td {
+        padding: 10px 25px;
+        line-height: 1.5;
+        border: none;
+        vertical-align: middle;
+		background-color: white;
+      }
+
+      .table thead tr th {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        font-size: 30px;
+        color: blue;
+        text-align:center;
+		background-color: white;
+      }
+
+      td {
+        color: white;
+        font-size: 20px;
+        text-align:center;
+        margin: auto;
+      }
+
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src='lab3_3.js' async></script>
+
+  
 	</head>
 
 <body>
@@ -19,19 +51,42 @@
             
 
             <nav>
-                <a href="">Home </a>
-                <a href="">Enter Data</a>
-                <a href="">View Data</a>
+                <a href="Arek Library Project.html">Home </a>
+                <a href="write-data.html">Enter Data</a>
+                <a href="view-data.html">View Data</a>
                 <a href="">Browse Data</a>
             </nav>
         </section>
         <section>
-
+           
             <div style ="color: white; font-size: 30px">
 		Arek's Library - Store your book info. and retrieve it whenever you want!
             </div>
             
         </section>
     </main>
+	<body>
+   
+
+    <div>
+      <table class="table">
+        <colgroup>
+          <col class='col-xs-3'>
+        </colgroup>
+        <thead>
+          <tr>
+            <th >ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Publisher</th>
+            <th>Year Published</th>
+            <th>ISBN</th>
+          </tr>
+        </thead>
+        <tbody id='libraryTable'></tbody>
+      </table>
+    </div>
+
+    <div id="test"></div>
 </body>
 </html>

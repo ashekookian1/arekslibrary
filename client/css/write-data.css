@@ -1,0 +1,41 @@
+html {
+   background: url("../images/Library_Background.png");
+   background-repeat: no-repeat;
+   background-size: cover;
+}
+    
+nav a {
+   color: white;
+    padding: 0px 10px;
+}
+
+nav {
+  background-color: #000000;
+  padding: 10px 3px;
+  
+
+}
+
+
+h1 {
+	background-color: #000000;
+	padding: 0px 10px;
+	  
+  
+}
+
+div {
+	background-color: black;
+	padding: 50px 50px; 
+}
+
+div {
+	background-color: white; 
+	padding: 10px;
+	
+}
+	
+
+
+	
+	
