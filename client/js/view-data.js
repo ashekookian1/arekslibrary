@@ -1,4 +1,13 @@
-var jsonObject = JSON.parse(data);
+var jsonObject = [{"ID":"lib: 1606248331027", "bookTitle":"Dracula", "author":"Bram Stoker", "publisher": "Random House", 
+"yearPublished": "1897", "isbn":"0-571-05686-5"},
+
+{"ID":"lib: 1606248433134", "bookTitle": "Frankenstein", "author":"Mary Shelly","publisher":"Pearson","yearPublished":"1818","isbn":"9780134801155"},
+
+{"ID":"lib: 1606248476038", "bookTitle": "Crime and Punishment", "author":"Fyodor Dostoyevsky", "publisher":"Norton", "yearPublished":"1866","isbn":"9781718198456"},
+
+{"ID":"lib: 1606431028909", "bookTitle": "Vanity Fair", "author":"William Makepeace Thackery", "publisher":"Faber and Faber", "yearPublished":"1848","isbn":"53163540"},
+
+{"ID":"lib: 1606431056850","bookTitle": "Angela's Ashes", "author": "Frank McCourt", "publisher": "Norton", "yearPublished":"1996","isbn":"9798676487225"}];
 
 main();
 
@@ -27,20 +36,5 @@ function showTable() {
     var tableBodyObj = document.getElementById("libraryTable");
 
     tableBodyObj.innerHTML = htmlString;
-    
-	
-	//I'm assuming it shouldn't be pre-populated?  (Like using the below list for ex. from lab 3.3)  
-	//I'm assuming that we should populate it from the enter data page, and then it shows up on the view data page?
-	
-	var anotherBook = {};
-    anotherBook.ID = "58";
-    anotherBook.bookTitle = "More Fun with JSON";
-    anotherBook.author = "Jebidiah";
-    anotherBook.publisher="Stifler's Mom";
-    anotherBook.yearPublished="2025";
-    anotherBook.isbn="987654";
-
-    jsonObject.push(anotherBook);
-
-    showTable();
+   
 }
