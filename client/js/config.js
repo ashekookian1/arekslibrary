@@ -1,0 +1,2 @@
+var libraryURL = "http://localhost:5000";  // this enables you to change the port # on your server if needed - this is the master control
+//so if you change it here, it changes it through all the other lines of code 
