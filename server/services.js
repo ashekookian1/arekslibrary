@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { request } = require("http");
 const path = require("path");
 
 const database_file = path.join(__dirname + "/files/data.txt");  // creating your own db
@@ -80,6 +81,45 @@ var services = function(app) {
         }
 
     });
+
+app.delete("/delete-record", function(req, res) { 
+
+        var deleteID = req.body.id;
+        if(fs.existsSync(database_file)) {
+            console.log("Delete ID: " + deleteID);
+            fs.readFile(database_file, "utf8", function(err, data) {
+                if(err) {
+                    res.json({msg: err});
+                }else{
+                    libraryData = JSON.parse(data);
+                    console.log(JSON.stringify(libraryData));
+                    for(var i=0; i<libraryData.length; i++) {
+                        if (libraryData[i].id === deleteID) {
+                            libraryData.splice(i, 1); 
+                            break;
+
+                        }
+                    
+                    }
+
+                    fs.writeFile(database_file, JSON.stringify(libraryData), function(err) {
+                                if(err) {
+                                            res.send(JSON.stringify({msg: err}));
+                                } else {
+                                     res.send(JSON.stringify({msg: "SUCCESS"}));
+                                }
+
+                    });
+                }
+            });
+        }
+    });
+
+
+
+
 }
     
 module.exports = services; 
+
+    

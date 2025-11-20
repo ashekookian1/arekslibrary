@@ -27,7 +27,7 @@ function retrieveData() {
     })
 
     .then(data => {
-        console.log(data.msg);
+        console.log(data.libraryData);
         if(data.msg === "SUCCESS") { 
             console.log("Testing");
             showTable(data.libraryData)
@@ -39,26 +39,74 @@ function retrieveData() {
         alert("Error: " + err);
     });
 
-
- 
 }
+
 
 function showTable(jsonObject) {
     var htmlString = "";
 
     for(var i=0; i<jsonObject.length; i++) {
         htmlString += "<tr>";
-            htmlString += "<td>" + jsonObject[i].ID + "</td>";
+           
+            // htmlString += "<td>" + jsonObject[i].id + "</td>";
             htmlString += "<td>" + jsonObject[i].bookTitle + "</td>";
             htmlString += "<td>" + jsonObject[i].author + "</td>";
             htmlString += "<td>" + jsonObject[i].publisher + "</td>";
             htmlString += "<td>" + jsonObject[i].yearPublished + "</td>";
             htmlString += "<td>" + jsonObject[i].isbn + "</td>";
+            //htmlString += "<td> </td>";  
+
+           htmlString += "<td><button class='delete-button' data-id='"+ jsonObject[i].id + "'>Delete</button></td>"; 
+           //part 2 of create a delete button???
+           // <button style="font-size: 20px" id="submitBtn" >Delete</button> - HTML how to create a delete button
+
         htmlString += "</tr>";
     }
 
-    var tableBodyObj = document.getElementById("libraryTable");
+    document.getElementById("libraryTable").innerHTML = htmlString;
+    
+    activateDelete();
+}
 
-    tableBodyObj.innerHTML = htmlString;
-   
+function activateDelete() {
+    // Capture all html items tagged with the delete-button class
+    const deleteButtons = document.querySelectorAll('.delete-button');
+
+    //Loop through all the deleteButtons and create a listener for each one
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const deleteID = this.getAttribute("data-id");  // <-- from the html button object
+            handleDelete(deleteID);  //You will write this function.
+        });
+    });
+}
+
+function handleDelete(deleteId) {
+    var deleteBookId = { id: deleteId };
+    fetch(libraryURL + "/delete-record", {   
+        method: "DELETE",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(deleteBookId)
+    })
+
+    .then(response => {
+        if(!response.ok) {
+            throw new Error("Network response was not ok: " + response.statusText);
+        }
+
+        return response.json();
+    })
+
+    .then(data => { 
+        if(data.msg === "SUCCESS"){
+            retrieveData();
+        }else{
+            console.log(data.msg)
+        }
+    })
+    .catch(error => {
+         console.log("There is an error" + error);
+    });
+
+
 }
