@@ -30,7 +30,7 @@ app.controller('browseBooksCtrl', function($scope, $http){
         $scope.showHide();
     };
 
-    $scope.showHide = function(currentRecord) { // not working!!!!!
+    $scope.showHide = function() { // not working!!!!!
         $scope.hidePrev = (currentRecord === 0) ? true : false;  // so you don't keep clicking and getting blanks before the books array starts
         $scope.hideNext = (currentRecord === libraryData.length-1) ? true : false; // same as above but for after end
     }
