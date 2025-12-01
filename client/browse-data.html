@@ -1,0 +1,67 @@
+<!doctype html>     
+<html>
+<head>
+	<title>Browse Data</title>
+
+    <h1 style="color:white;"</color:>Arek's Library</h1>
+
+   <link href="/client/css/browse-data_css_sheet.css" rel="stylesheet" /> 
+
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="/client/js/config.js"></script>
+        <script src='/client/js/browse-data.js'></script>
+
+</head>
+   
+<body ng-app="browseBooksApp" ng-controller="browseBooksCtrl">
+
+     <section>
+
+            <nav>
+                <a href="/">Home </a>
+                <a href="/write-data">Enter Data</a>
+                <a href="/view-data">View Data</a>
+                <a href="/browse-data">Browse Data</a>
+            </nav>
+        </section>
+        
+        <div style="font-size: 30px">
+            <div>
+                <label for="bookTitle">Book Title: </label>
+                <label style="margin-left: 30px; color: blue;" id="bookTitle">{{obj.bookTitle}}</label>
+            </div>
+            <div>
+                <label for="author">Author: </label>
+                <label style="margin-left: 30px; color: blue;" id="author">{{obj.author}}</label>
+            </div>
+            <div>
+                <label for="yearPublished">Year Published: </label>
+                <label style="margin-left: 30px; color: blue;" id="yearPublished">{{obj.yearPublished}}</label>
+            </div>
+            <div>
+                <label for="publisher">Publisher: </label>
+                <label style="margin-left: 30px; color: blue;" id="publisher">{{obj.publisher}}</label>  
+            </div>
+            <div>
+                <label for="isbn">ISBN: </label>
+                <label style="margin-left: 30px; color: blue;" id="isbn">{{obj.isbn}}</label>  
+            </div>
+
+            <div style="float: left; margin-top: 30px">
+                
+
+                <div style="float: left;">
+                    <button id="previous" ng-click="changeRecord(-1)" 
+                    ng-hide="previousRecord"> <<<  Previous Record </button>
+                </div>
+                    <div style="float: left;">
+                    <button id="next" ng-click="changeRecord(+1)"
+                    ng-hide="nextRecord">Next Record  >>> </button>
+                </div>
+
+            </div>
+        </div>  
+
+    </body>   
+</html>
+

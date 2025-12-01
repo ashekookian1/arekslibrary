@@ -14,6 +14,9 @@ var router = function(app) {
         res.sendFile(path.join(__dirname + "/../client/view-data.html"))  //telling it the path to where the code is sitting
     });
 
+    app.get("/browse-data", function(req, res) { // unnamed function is in between the {}s
+        res.sendFile(path.join(__dirname + "/../client/browse-data.html"))  //telling it the path to where the code is sitting
+    });
 }
 
 module.exports = router;
