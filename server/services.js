@@ -1,16 +1,19 @@
-const fs = require("fs");
-const { request } = require("http");
-const path = require("path");
+//Bring in Mongo
+const {MongoClient, ObjectId } = require('mongodb'); //create the  mongo client and the object id
 
-const database_file = path.join(__dirname + "/files/data.txt");  // creating your own db
+//Define Database URL
+const dbURL = "mongodb://127.0.0.1";  
+
+//const database_file = path.join(__dirname + "/files/data.txt");  // creating your own db
+
+const client = new MongoClient(dbURL)
 
 var services = function(app) {
     // all db listeners are in here
-    app.post("/write-record", function(req, res) {
-        var id = "lib" + Date.now();
+    app.post("/write-record", async function(req, res) {
+        
 
         var bookData = {
-            id: id,
             bookTitle: req.body.bookTitle,
             author: req.body.author,
             publisher: req.body.publisher,
@@ -19,104 +22,63 @@ var services = function(app) {
         };
 
         console.log(JSON.stringify(bookData))
+        try{
+            const conn = await client.connect(); // connect to the Mongo server
+            const db = conn.db("library"); // connect to the Mongo db desired
+            const coll = db.collection("bookTable"); // connect to the collection in the db desired
 
-        var libraryData = []; //creating an array where you can hold data
+            await coll.insertOne(bookData);
 
-        if(fs.existsSync(database_file)) {
-            //read current data
-            fs.readFile(database_file, "utf8", function(err, data) {// unnamed function - put everything in a JSON string
-                if(err) {
-                    res.send(JSON.stringify({msg: err}));
-                } else {
-                    libraryData = JSON.parse(data); // put everything in a JSON object
+            await conn.close(); //close the db connection
+            return res.json({msg: "SUCCESS"}); // message that successfully got the data you wanted - if it got it correctly
 
-                    libraryData.push(bookData);
-
-                    fs.writeFile(database_file, JSON.stringify(libraryData), function(err) {
-                                if(err) {
-                                            res.send(JSON.stringify({msg: err}));
-                                } else {
-                                     res.send(JSON.stringify({msg: "SUCCESS"}));
-                                }
-
-                    });
-                }
-            }); // end of read file
-
-        
-        
-        
-    
-        } else {
-            libraryData.push(bookData);
-
-            fs.writeFile(database_file, JSON.stringify(libraryData), function(err) {
-                                if(err) {
-                                            res.send(JSON.stringify({msg: err}));
-                                } else {
-                                     res.send(JSON.stringify({msg: "SUCCESS"}));
-                                }
-            }); // end of write file
-        }
-
-
-    });
-
-    app.get("/get-records", function(req, res) {
-        if(fs.existsSync(database_file)) {
-            fs.readFile(database_file, "utf8", function(err, data) {
-                if(err) {
-                    res.json({msg: err});
-                }else{
-                    libraryData = JSON.parse(data);
-                    console.log(JSON.stringify(libraryData));
-                    res.json({msg: "SUCCESS", libraryData:libraryData});  // left side of colon = JSON object name 
-                                                                            // and right side = object value
-                }
-                
-            }) 
-        } else {
-            libraryData = []; //empty array
-            res.json({msg: "SUCCESS", libraryData:libraryData}); 
+        } catch(err) {
+            return res.json({msg:"Error: " + err}); // gives the client an error message if something goes wrong - error variable = what went wrong
         }
 
     });
 
-app.delete("/delete-record", function(req, res) { 
+    app.get("/get-records", async function(req, res) {
+        
+        const orderBy = {bookTitle: 1};        // order it by the spell name - in the name field
+
+        //2.  Connect, find data, close database, return results or error
+        try {
+            const conn = await client.connect(); // connect to the Mongo server
+            const db = conn.db("library"); // connect to the Mongo db desired
+            const coll = db.collection("bookTable"); // connect to the collection in the db desired
+
+            const books = await coll.find().sort(orderBy).toArray();
+
+            await conn.close();
+
+            return res.json({msg: "SUCCESS", libraryData: books}); // gets spells array back and it populates the table 
+        } catch(err) {
+            return res.json({msg: "Error: " + err});
+        }
+
+    });
+
+app.delete("/delete-record", async function(req, res) { 
 
         var deleteID = req.body.id;
-        if(fs.existsSync(database_file)) {
-            console.log("Delete ID: " + deleteID);
-            fs.readFile(database_file, "utf8", function(err, data) {
-                if(err) {
-                    res.json({msg: err});
-                }else{
-                    libraryData = JSON.parse(data);
-                    console.log(JSON.stringify(libraryData));
-                    for(var i=0; i<libraryData.length; i++) {
-                        if (libraryData[i].id === deleteID) {
-                            libraryData.splice(i, 1); 
-                            break;
+        var deleteID2 = ObjectId.createFromHexString(deleteID);
 
-                        }
-                    
-                    }
+        //3. Create search with MongoID
+        const search = {_id: deleteID2};
+        try{
+            const conn = await client.connect();
+            const db = conn.db("library");
+            const coll = db.collection('bookTable');
 
-                    fs.writeFile(database_file, JSON.stringify(libraryData), function(err) {
-                                if(err) {
-                                            res.send(JSON.stringify({msg: err}));
-                                } else {
-                                     res.send(JSON.stringify({msg: "SUCCESS"}));
-                                }
+            await coll.deleteOne(search);
 
-                    });
-                }
-            });
+            await conn.close();
+            return res.json({msg: "SUCCESS"});
+        } catch(err) {
+            return res.json({msg: "Error: " + err});        
         }
-    });
-
-
-
+});
 
 }
     

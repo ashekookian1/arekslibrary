@@ -56,7 +56,7 @@ function showTable(jsonObject) {
             htmlString += "<td>" + jsonObject[i].isbn + "</td>";
             //htmlString += "<td> </td>";  
 
-           htmlString += "<td><button class='delete-button' data-id='"+ jsonObject[i].id + "'>Delete</button></td>"; 
+           htmlString += "<td><button class='delete-button' data-id='"+ jsonObject[i]._id + "'>Delete</button></td>"; 
            //part 2 of create a delete button???
            // <button style="font-size: 20px" id="submitBtn" >Delete</button> - HTML how to create a delete button
 
