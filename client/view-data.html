@@ -7,7 +7,7 @@
 <html>
 <head>
 	<title>View Data</title>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 	<h1 style="color:white;"</color:>Arek's Library</h1>
 
 	<link href="/client/css/view-data.css" rel="stylesheet" />
@@ -15,7 +15,7 @@
   <script  src="/client/js/config.js"></script>
   <script  src="/client/js/view-data.js"></script>
 	                          
-	<style>
+	<style> 
       .table > thead > tr > th,
       .table > tbody > tr > td {
         padding: 10px 25px;
@@ -60,8 +60,21 @@
         
     </main>
 	<body>
-   
+   <body data-ng-app="libraryDataApp" data-ng-controller="libraryDataCtrl" data-ng-init="hideForm=true">
+    <section data-ng-hide="hideTable">
 
+  <!-- fix this later - this part is #2 on the project - is causing issues when I uncomment it !!!!! -->
+
+      <!-- <div  style="margin-left: 70px;"
+       
+        <label for="groupby">Author:</label>
+        <select id="groupby" 
+                data-ng-model="selectedAuthor"  
+                data-ng-options="author.display for author in author" 
+                data-ng-change="redrawTable()"
+              >
+
+</div> -->
     <div>
       <table class="table">
         <colgroup>
@@ -76,12 +89,70 @@
             <th>Year Published</th>
             <th>ISBN</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
-        <tbody id='libraryTable'></tbody>
+        <!-- <tbody id='libraryTable'> -->
+          <tr data-ng-repeat="obj in libraryData">
+            <td>{{ obj.bookTitle }}</td>
+            <td>{{ obj.author }}</td>
+            <td>{{ obj.publisher }}</td>
+            <td>{{ obj.yearPublished}}</td>
+            <td>{{ obj.isbn}}</td>
+            <td>
+              <button data-ng-click="deleteBook(obj['_id'])">DELETE</button> 
+            </td>
+            <td>
+              <button data-ng-click="editBook($index)">EDIT</button> 
+            </td>
+          </tr>
+        <!-- </tbody> -->
       </table>
     </div>
 
-    <div id="test"></div>
+    
+    </section>
+
+    <section data-ng-hide="hideForm">
+      <div style="font-size: 30px">
+        <label data-ng-model="bookID" hidden></label>
+        <div>
+            <label for="title">Book Title: </label>
+            <input type="text" id="title" data-ng-model="title" data-ng-change=startNew()>
+        </div>
+        <div>
+            <label for="author">Author: </label>
+            <input type="text" id="author" data-ng-model="author" data-ng-change=startNew()>
+        </div>
+        <div>
+            <label for="publisher">Publisher: </label>
+            <input type="text" id="publisher" data-ng-model="publisher" data-ng-change=startNew()>
+        </div>
+        <div>
+            <label for="yearPublished">Year Published: </label>
+            <input type="text" id="yearPublished" data-ng-model="yearPublished" data-ng-change=startNew()>
+        </div>
+
+        <div>
+            <label for="isbn">ISBN: </label>
+            <input type="text" id="isbn" data-ng-model="isbn" data-ng-change=startNew()>
+        </div>
+
+        <div style="float: left; margin-top: 30px">
+            <div style="float: left; clear: right; margin-left: 30px">
+                <button id="submit" data-ng-click="updateBook()">Update</button>
+            </div>
+        </div>
+
+        <div style="float: left; margin-top: 30px">
+            <div style="float: left; clear: right; margin-left: 30px">
+                <button id="cancelButton" data-ng-click="cancelUpdate()">Cancel</button>
+            </div>
+        </div>
+        <div style="float: left; clear: left; margin-top: 20px; font-size: 24px; color:green;">{{addResults}}</div>
+      </div>  
+    </section>
+  </body>
+</html>
 </body>
 </html>

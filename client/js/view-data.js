@@ -1,15 +1,131 @@
-// var jsonObject = [{"ID":"lib: 1606248331027", "bookTitle":"Dracula", "author":"Bram Stoker", "publisher": "Random House", 
-// "yearPublished": "1897", "isbn":"0-571-05686-5"},
+//1.  Define angular app
+var app = angular.module("libraryDataApp", []);
 
-// {"ID":"lib: 1606248433134", "bookTitle": "Frankenstein", "author":"Mary Shelly","publisher":"Pearson","yearPublished":"1818","isbn":"9780134801155"},
+//2.  Create the controller and populate with the functions needed
+app.controller('libraryDataCtrl', function ($scope, $http) {
+    $scope.libraryData = [];
+   
+    $scope.get_records = function() {
+        $http({
+            method : "get",
+            url : libraryURL + "/get-records"
+        }).then(function(response) {
+            if(response.data.msg === "SUCCESS") {
+                // spellTableData = response.data.spells;
+                $scope.libraryData = response.data.libraryData;
+                
+            } else {
+                console.log(response.data.msg);
+            }
+        }, function(response) {
+            alert(response);
+            console.log("I failed");
+        });
+    };
 
-// {"ID":"lib: 1606248476038", "bookTitle": "Crime and Punishment", "author":"Fyodor Dostoyevsky", "publisher":"Norton", "yearPublished":"1866","isbn":"9781718198456"},
+    $scope.redrawTable = function() {
+        var type = $scope.selectedType.value;
+        console.log("redraw");
+        $http({
+            method : "get",
+            url : libraryURL + "/get-records",
+            params: {type: type}
+        }).then(function(response) {
+            if(response.data.msg === "SUCCESS") {
+				console.log("here");
+                // spellTableData = response.data.spells;
+                $scope.libraryData = response.data.libraryData;
+            } else {
+                console.log(response.data.msg);
+            }
+        }, function(response) {
+            alert(response);
+            console.log("I failed");
+        });
+    }
 
-// {"ID":"lib: 1606431028909", "bookTitle": "Vanity Fair", "author":"William Makepeace Thackery", "publisher":"Faber and Faber", "yearPublished":"1848","isbn":"53163540"},
+    
 
-// {"ID":"lib: 1606431056850","bookTitle": "Angela's Ashes", "author": "Frank McCourt", "publisher": "Norton", "yearPublished":"1996","isbn":"9798676487225"}];
+    $scope.editSpell = function(editBook) {
+        $scope.name = $scope.spells[editBook].title;
+        $scope.type = $scope.spells[editBook].author;
+        $scope.effect = $scope.spells[editBook].publisher;
+        $scope.counter = $scope.spells[editBook].yearPublished;
+        $scope.spellID = $scope.spells[editBook].isbn;
 
-retrieveData();
+        console.log("editBook set: " + $scope.editBook);
+        $scope.hideTable = true;
+        $scope.hideForm = false;
+    }
+
+    $scope.editBook = function() {
+        if($scope.title === "" || $scope.author === "" || $scope.publisher === "" 
+            || $scope.yearPublished === "" || $scope.isbn === "") {
+            $scope.addResults = "Please fill in all fields.";
+            return;
+        }
+
+        console.log("Edit completed successfully check: " + $scope.editBook);
+
+        $http({
+            method : "put",
+             url : libraryDataURL + "/write-data",
+             data: {
+                "title": $scope.title,
+                "author": $scope.author,
+                "publisher": $scope.publisher,
+                "yearPublished": $scope.yearPublished,
+                "isbn": $scope.isbn
+            }
+        }).then(function(response) {
+            if(response.data.msg === "SUCCESS") {
+                $scope.hideForm = true;
+                $scope.hideTable = false;
+
+                $scope.redrawTable();
+                
+                $scope.title = "";
+                $scope.author = "";
+                $scope.publisher = "";
+                $scope.yearPublished = "";
+                $scope.isbn = "";
+            } else {
+                $scope.addResults = response.data.msg;
+            }
+        }, function(response) {
+            alert(response);
+            console.log("I failed");
+        });
+
+    }
+
+    $scope.get_records();
+});
+
+//A handy function we will use to get the list of types
+function getTypes(libraryData) {
+    var typeExists;  //This is used to prevent duplicates
+
+    typesArray = [{value:"", display:"ALL"}];
+	
+	//Loop through the JSON array returned from the server
+    for(var i=0; i<libraryData.length; i++) {
+		//Check to see if the type in the ith record has already been captured
+        typeExists = typesArray.find(function(element) {
+            return element.value === libraryData[i].type;
+        })    
+        if(typeExists) {
+            continue;  //If already captured, move on to next element
+        } else {
+			//If not captured, add the type and uppercase type to the types array
+            typesArray.push({value: libraryData[i].type, display: libraryData[i].type.toUpperCase()});
+        }
+    }
+
+    return typesArray
+}
+
+//retrieveData();
 
 function retrieveData() {
         
@@ -41,72 +157,74 @@ function retrieveData() {
 
 }
 
+// this (below) is what was there before the angular addition
 
-function showTable(jsonObject) {
-    var htmlString = "";
 
-    for(var i=0; i<jsonObject.length; i++) {
-        htmlString += "<tr>";
+// function showTable(jsonObject) {
+//     var htmlString = "";
+
+//     for(var i=0; i<jsonObject.length; i++) {
+//         htmlString += "<tr>";
            
-            // htmlString += "<td>" + jsonObject[i].id + "</td>";
-            htmlString += "<td>" + jsonObject[i].bookTitle + "</td>";
-            htmlString += "<td>" + jsonObject[i].author + "</td>";
-            htmlString += "<td>" + jsonObject[i].publisher + "</td>";
-            htmlString += "<td>" + jsonObject[i].yearPublished + "</td>";
-            htmlString += "<td>" + jsonObject[i].isbn + "</td>";
-            //htmlString += "<td> </td>";  
+//             // htmlString += "<td>" + jsonObject[i].id + "</td>";
+//             htmlString += "<td>" + jsonObject[i].bookTitle + "</td>";
+//             htmlString += "<td>" + jsonObject[i].author + "</td>";
+//             htmlString += "<td>" + jsonObject[i].publisher + "</td>";
+//             htmlString += "<td>" + jsonObject[i].yearPublished + "</td>";
+//             htmlString += "<td>" + jsonObject[i].isbn + "</td>";
+//             //htmlString += "<td> </td>";  
 
-           htmlString += "<td><button class='delete-button' data-id='"+ jsonObject[i]._id + "'>Delete</button></td>"; 
-           //part 2 of create a delete button???
-           // <button style="font-size: 20px" id="submitBtn" >Delete</button> - HTML how to create a delete button
+//            htmlString += "<td><button class='delete-button' data-id='"+ jsonObject[i]._id + "'>Delete</button></td>"; 
+//            //part 2 of create a delete button???
+//            // <button style="font-size: 20px" id="submitBtn" >Delete</button> - HTML how to create a delete button
 
-        htmlString += "</tr>";
-    }
+//         htmlString += "</tr>";
+//     }
 
-    document.getElementById("libraryTable").innerHTML = htmlString;
+//     document.getElementById("libraryTable").innerHTML = htmlString;
     
-    activateDelete();
-}
+//     activateDelete();
+// }
 
-function activateDelete() {
-    // Capture all html items tagged with the delete-button class
-    const deleteButtons = document.querySelectorAll('.delete-button');
+// function activateDelete() {
+//     // Capture all html items tagged with the delete-button class
+//     const deleteButtons = document.querySelectorAll('.delete-button');
 
-    //Loop through all the deleteButtons and create a listener for each one
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const deleteID = this.getAttribute("data-id");  // <-- from the html button object
-            handleDelete(deleteID);  //You will write this function.
-        });
-    });
-}
+//     //Loop through all the deleteButtons and create a listener for each one
+//     deleteButtons.forEach(button => {
+//         button.addEventListener('click', function() {
+//             const deleteID = this.getAttribute("data-id");  // <-- from the html button object
+//             handleDelete(deleteID);  //You will write this function.
+//         });
+//     });
+// }
 
-function handleDelete(deleteId) {
-    var deleteBookId = { id: deleteId };
-    fetch(libraryURL + "/delete-record", {   
-        method: "DELETE",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify(deleteBookId)
-    })
+// function handleDelete(deleteId) {
+//     var deleteBookId = { id: deleteId };
+//     fetch(libraryURL + "/delete-record", {   
+//         method: "DELETE",
+//         headers: { "Content-Type": "application/json"},
+//         body: JSON.stringify(deleteBookId)
+//     })
 
-    .then(response => {
-        if(!response.ok) {
-            throw new Error("Network response was not ok: " + response.statusText);
-        }
+//     .then(response => {
+//         if(!response.ok) {
+//             throw new Error("Network response was not ok: " + response.statusText);
+//         }
 
-        return response.json();
-    })
+//         return response.json();
+//     })
 
-    .then(data => { 
-        if(data.msg === "SUCCESS"){
-            retrieveData();
-        }else{
-            console.log(data.msg)
-        }
-    })
-    .catch(error => {
-         console.log("There is an error" + error);
-    });
+//     .then(data => { 
+//         if(data.msg === "SUCCESS"){
+//             retrieveData();
+//         }else{
+//             console.log(data.msg)
+//         }
+//     })
+//     .catch(error => {
+//          console.log("There is an error" + error);
+//     });
 
 
-}
+// }
