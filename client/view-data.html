@@ -1,6 +1,6 @@
 <!--Arek Shekookian-->
 <!-- Comp 246-->
-<!-- Assignment 2.2-->
+
 
     
 <!doctype html>
@@ -62,19 +62,14 @@
 	<body>
    <body data-ng-app="libraryDataApp" data-ng-controller="libraryDataCtrl" data-ng-init="hideForm=true">
     <section data-ng-hide="hideTable">
-
-  <!-- fix this later - this part is #2 on the project - is causing issues when I uncomment it !!!!! -->
-
-      <!-- <div  style="margin-left: 70px;"
        
-        <label for="groupby">Author:</label>
-        <select id="groupby" 
+        <label for="groupBy">Author:</label>
+        <select> id="groupBy" 
                 data-ng-model="selectedAuthor"  
                 data-ng-options="author.display for author in author" 
-                data-ng-change="redrawTable()"
-              >
+                data-ng-change="redrawTable()" </select>
+</div>
 
-</div> -->
     <div>
       <table class="table">
         <colgroup>
@@ -88,8 +83,8 @@
             <th>Publisher</th>
             <th>Year Published</th>
             <th>ISBN</th>
-            <th></th>
-            <th></th>
+            <th>Delete</th>
+            <th>Edit</th>
           </tr>
         </thead>
         <!-- <tbody id='libraryTable'> -->

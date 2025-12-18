@@ -46,30 +46,34 @@ app.controller('libraryDataCtrl', function ($scope, $http) {
 
     
 
-    $scope.editSpell = function(editBook) {
-        $scope.name = $scope.spells[editBook].title;
-        $scope.type = $scope.spells[editBook].author;
-        $scope.effect = $scope.spells[editBook].publisher;
-        $scope.counter = $scope.spells[editBook].yearPublished;
-        $scope.spellID = $scope.spells[editBook].isbn;
+    $scope.editBook = function(editBook) {
+        $scope.title = $scope.libraryData[editBook].title;
+        $scope.author = $scope.libraryData[editBook].author;
+        $scope.publisher = $scope.libraryData[editBook].publisher;
+        $scope.yearPublished = $scope.libraryData[editBook].yearPublished;
+        $scope.isbn = $scope.libraryData[editBook].isbn;
 
-        console.log("editBook set: " + $scope.editBook);
+        // console.log("editBook set: " + $scope.editBook);
         $scope.hideTable = true;
         $scope.hideForm = false;
     }
 
-    $scope.editBook = function() {
+    $scope.updateBook = function() {
         if($scope.title === "" || $scope.author === "" || $scope.publisher === "" 
             || $scope.yearPublished === "" || $scope.isbn === "") {
             $scope.addResults = "Please fill in all fields.";
             return;
         }
+$scope.cancelUpdate = function() {
+		$scope.hideForm = true;
+		$scope.hideTable = false;
+}
 
-        console.log("Edit completed successfully check: " + $scope.editBook);
+        // console.log("Edit completed successfully check: " + $scope.editBook);
 
         $http({
-            method : "put",
-             url : libraryDataURL + "/write-data",
+            method : "PUT",
+             url : libraryURL + "/write-data",
              data: {
                 "title": $scope.title,
                 "author": $scope.author,
@@ -157,6 +161,36 @@ function retrieveData() {
 
 }
 
+function deleteData() {
+        
+    fetch(libraryURL + "/delete-records", { //get the data from the database
+        method: "DELETE"
+    })
+
+    .then(response => {  // sending the response to an unnamed function
+    
+        if(!response.ok){ // if response is not ok, then throw the below error message
+            throw new Error("Network Error: " + response.statusText);
+        }
+
+        return response.json();
+    })
+
+
+
+    .then(data => {
+        console.log(data.libraryData);
+        if(data.msg === "SUCCESS") { 
+            console.log("Testing");
+            showTable(data.libraryData)
+
+        }
+    })
+
+    .catch(err => {
+        alert("Error: " + err);
+    });
+}
 // this (below) is what was there before the angular addition
 
 

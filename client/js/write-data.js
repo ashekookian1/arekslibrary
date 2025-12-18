@@ -24,7 +24,7 @@ event.preventDefault();
     }
 
     //Send data through a fetch
-    fetch(libraryURL + "/write-record", {
+    fetch(libraryURL + "/write-data", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

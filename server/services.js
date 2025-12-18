@@ -10,8 +10,8 @@ const client = new MongoClient(dbURL)
 
 var services = function(app) {
     // all db listeners are in here
-    app.post("/write-record", async function(req, res) {
-        
+    app.post("/write-data", async function(req, res) {
+    
 
         var bookData = {
             bookTitle: req.body.bookTitle,
@@ -20,6 +20,7 @@ var services = function(app) {
             yearPublished: req.body.yearPublished,
             isbn: req.body.isbn
         };
+
 
         console.log(JSON.stringify(bookData))
         try{
@@ -40,7 +41,7 @@ var services = function(app) {
 
     app.get("/get-records", async function(req, res) {
         
-        const orderBy = {bookTitle: 1};        // order it by the spell name - in the name field
+        const orderBy = {bookTitle: 1};        // order it by name - in the name field
 
         //2.  Connect, find data, close database, return results or error
         try {
@@ -58,6 +59,57 @@ var services = function(app) {
         }
 
     });
+
+app.get("/get-dataByType", async function(req, res) {
+        //1.  Capture data sent from client (see line 34 in spellsTable.js for JSON object name)
+        var typeValueSentFromClient = req.query.type;
+
+        //2.  Filter by the data value sent from the client.
+        //       Note: type = "", is sent when ALL is selected.
+        var search = (typeValueSentFromClient === "") ? { } : {type: typeValueSentFromClient};
+
+        //3. Set up sort by name ascending
+                const orderBy = { author: 1 };
+
+        //4.  Connect, find data, close database, return results or error
+        try {
+            const conn = await client.connect(); // connect to the Mongo server
+            const db = conn.db("libraryData"); // connect to the Mongo db desired
+            const coll = db.collection("libraryData"); // connect to the collection in the db desired
+
+            const spells = await coll.find(search).sort(orderBy).toArray();
+
+            await conn.close();
+
+            return res.json({msg: "SUCCESS", author: author}); // gets spells array back and it populates the table 
+        } catch(err) {
+            return res.json({msg: "Error: " + err});
+        }
+
+    });
+
+    app.put('/update-record', async function(req, res) {
+        //1.  Bring in the data from the client (see spellsTable.js, line 96 for JSON object names)
+        var titleSentFromClient = req.body.title;
+        var authorSentFromClient = req.body.author;
+        var publisherSentFromClient = req.body.publisher;
+        var yearPublishedSentFromClient = req.body.yearPublished;
+        var isbnSentFromClient = req.body.isbn;
+
+        var updateRecord =  {
+            $set: {
+                title: titleSentFromClient,
+                author: authorSentFromClient,
+                publisher: publisherSentFromClient,
+                yearPublished: yearPublishedSentFromClient, 
+                isbn: isbnSentFromClient
+                
+                // put counter-spell in ""s because 
+                //JSON has issues with hyphens - so this way, it won't cause issues when use the hyphen
+            }
+        };
+    });
+
 
 app.delete("/delete-record", async function(req, res) { 
 
@@ -81,7 +133,5 @@ app.delete("/delete-record", async function(req, res) {
 });
 
 }
-    
-module.exports = services; 
 
-    
+module.exports = services;
